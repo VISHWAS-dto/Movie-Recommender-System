@@ -64,8 +64,14 @@ def recommend(movie):
 # =======================
 # LOAD DATA
 # =======================
-Movies_dict = pickle.load(open("Movies_dict.pkl", "rb"))
+import gzip
+import pickle
+
+with gzip.open("Movies_dict.pkl.gz", "rb") as f:
+    Movies_dict = pickle.load(f)
+
 Movies = pd.DataFrame(Movies_dict)
+
 
 cs = pickle.load(open("cs.pkl", "rb"))
 
