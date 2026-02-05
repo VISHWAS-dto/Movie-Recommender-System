@@ -6,9 +6,10 @@ import requests
 import os
 
 # =======================
-# TMDB API KEY (SECURE)
+# TMDB API KEY
 # =======================
-API_KEY = os.getenv("TMDB_API_KEY")
+API_KEY = os.getenv("TMDB_API_KEY")  # set in Streamlit Cloud secrets
+
 
 # =======================
 # FETCH MOVIE POSTER
@@ -35,6 +36,26 @@ def fetch_poster(movie_id):
 
 
 # =======================
+# LOAD MOVIES DATA
+# =======================
+if not os.path.exists("Movies_dict.pkl"):
+    st.error("Movies_dict.pkl file is missing")
+    st.stop()
+
+Movies_dict = pickle.load(open("Movies_dict.pkl", "rb"))
+Movies = pd.DataFrame(Movies_dict)
+
+
+# =======================
+# LOAD / GENERATE SIMILARITY MATRIX
+# =======================
+if not os.path.exists("cs.pkl"):
+    import generate_cs  # auto-create cs.pkl
+
+cs = pickle.load(open("cs.pkl", "rb"))
+
+
+# =======================
 # RECOMMEND FUNCTION
 # =======================
 def recommend(movie):
@@ -56,21 +77,6 @@ def recommend(movie):
         recommended_movies_posters.append(fetch_poster(movie_id))
 
     return recommended_movies, recommended_movies_posters
-
-
-# =======================
-# LOAD DATA
-# =======================
-Movies_dict = pickle.load(open("Movies_dict.pkl", "rb"))
-Movies = pd.DataFrame(Movies_dict)
-
-# =======================
-# LOAD / GENERATE SIMILARITY MATRIX
-# =======================
-if not os.path.exists("cs.pkl"):
-    import generate_cs   # auto-create cs.pkl
-
-cs = pickle.load(open("cs.pkl", "rb"))
 
 
 # =======================
